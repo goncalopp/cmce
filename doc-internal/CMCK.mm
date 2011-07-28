@@ -92,9 +92,13 @@
 <node CREATED="1311692251477" ID="ID_1832907543" MODIFIED="1311695823869" STYLE="bubble" TEXT="estudo do UCK"/>
 </node>
 <node CREATED="1311784951154" ID="ID_427794582" MODIFIED="1311784952786" TEXT="dia 6">
+<node CREATED="1311612426511" ID="ID_1134885591" MODIFIED="1311872227720" TEXT="correspond&#xea;ncia com equipa do UCK para integra&#xe7;&#xe3;o de altera&#xe7;&#xf5;es"/>
 <node CREATED="1311784959178" ID="ID_90826869" MODIFIED="1311784966898" TEXT="testes ao uck"/>
-<node CREATED="1311784967709" ID="ID_481289735" MODIFIED="1311785008441" TEXT="altera&#xe7;&#xf5;es simples ao uck"/>
-<node CREATED="1311612426511" ID="ID_1134885591" MODIFIED="1311785031427" TEXT="correspond&#xea;ncia com equipa do UCK para integra&#xe7;&#xe3;o de altera&#xe7;&#xf5;es"/>
+<node CREATED="1311784967709" ID="ID_1103936699" MODIFIED="1311872219310" TEXT="altera&#xe7;&#xf5;es ao uck para suportar CM"/>
+</node>
+<node CREATED="1311784951154" ID="ID_516646083" MODIFIED="1311872242069" TEXT="dia 7">
+<node CREATED="1311784959178" ID="ID_1504251570" MODIFIED="1311784966898" TEXT="testes ao uck"/>
+<node CREATED="1311784967709" ID="ID_859747237" MODIFIED="1311872219310" TEXT="altera&#xe7;&#xf5;es ao uck para suportar CM"/>
 </node>
 </node>
 </node>
