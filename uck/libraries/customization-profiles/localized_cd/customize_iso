@@ -68,7 +68,7 @@ function get_latest_kernel()
 
 # Create a temporary directory to assemble the gfxboot stuff in
 BUILD_DIR=`mktemp -d`
-GFXBOOT_THEME_NAME="gfxboot-theme-ubuntu" 
+GFXBOOT_THEME_NAME="gfxboot-theme-caixamagica"
 if [ -d $REMASTER_HOME/$GFXBOOT_THEME_NAME ]
 then
 	cp -r $REMASTER_HOME/$GFXBOOT_THEME_NAME "$BUILD_DIR" ||
@@ -80,7 +80,7 @@ else
 		failure "Cannot change directory to $BUILD_DIR"
 	DISTRO_CODENAME=`cd "$ISO_REMASTER_DIR"/dists && find . -maxdepth 1 -type d | grep '/' | cut -d '/' -f2` ||
 		failure "Unable to identify Ubuntu distro codename"
-	GFXBOOT_THEME_SOURCE_PACKAGE=`wget -q -O - http://packages.ubuntu.com/$DISTRO_CODENAME/$GFXBOOT_THEME_NAME | grep ".tar.gz" | cut -d '"' -f2`
+	GFXBOOT_THEME_SOURCE_PACKAGE=`wget -q -O - ftp://ftp.caixamagica.pt/caixamagica/pool/main/g/$GFXBOOT_THEME_NAME/ | grep ".tar.gz" | cut -d '"' -f2`
 	wget $GFXBOOT_THEME_SOURCE_PACKAGE ||
 		failure "Unable to download $GFXBOOT_THEME_NAME source package from $GFXBOOT_THEME_SOURCE_PACKAGE"
 	tar xfz *.tar.gz ||
