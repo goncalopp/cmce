@@ -88,7 +88,8 @@ else
 fi
 
 # Build the gfx boot theme
-cd $GFXBOOT_THEME_NAME 
+rm *.tar.gz
+cd *
 cd po
 ln -s pt.po pt_PT.po
 cd ..
