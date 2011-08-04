@@ -29,8 +29,8 @@ def shell(s, inp=None, stderr=False):
 
 
 def available_language_packs():
-    return shell('''apt-cache pkgnames language-support | egrep '^language-support-.{2,7}$' | cut -b 18- | sort''').split("\n")
+    return shell('''apt-cache pkgnames language-support | egrep '^language-support-.{2,7}$' | cut -b 18- | sort''').split("\n")[:-1]
 
 def available_boot_languages():
-    return open(LIBRARIES_DIR+"/langlist").read().split("\n")
+    return open(LIBRARIES_DIR+"/langlist").read().split("\n")[:-1]
 
