@@ -3,7 +3,7 @@ import sys, os
 from PyQt4 import QtGui
 from PyQt4.QtCore import QObject, QString, SIGNAL
 from main import  Ui_MainWindow
-from gui_library.input  import choice
+from gui_library.input  import choice, force_choice
 from gui_library.output import error
 import uck
 
@@ -16,16 +16,21 @@ def check_iso(filename):
        return False
     return True
 
+def choose_languages():
+    language_packs= force_choice(False, True, uck.available_language_packs(), "Choose which languages you want your system to support", multi_choice=True)
+    boot_languages= force_choice(False, True, uck.available_boot_languages(), "Choose which languages you want your system to support while initializing", multi_choice=True)
+    default_boot_language= force_choice(False, True, boot_languages, "Choose the default (system initialization) language")
+    if not (language_packs and boot_languages and default_boot_language):
+        return None
+    else:
+        return (language_packs, boot_languages, default_boot_language)
+
 def start_customization():
     iso_file= get_iso()
     if not check_iso(iso_file):
          return
     if change_language():
-        packs= choice(uck.available_language_packs(), "Which languages do you want your system to support?", multi_choice=True)
-        print packs, "PACKS"
-        boot_languages= choice( uck.available_boot_languages(), "Which languages do you want your system to support while initializing?", multi_choice=True)
-        print boot_languages, "boot"
-
+        choose_languages()
 #------GUI FUNCTIONS-------------------------------------------------
 
 
