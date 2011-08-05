@@ -62,3 +62,18 @@ def choice(str_list, text="Select a option:", title="Select a option", buttons= 
         w.returnValue= returnValue
         return w
     return baseDialog( None, title, text, create_widget, buttons)
+
+def force_choice(cant_cancel=True, return_at_least_one= True, *args, **kwargs):
+    '''repeats choice() until conditions are met'''
+    while True:
+        ret= choice(*args, **kwargs)
+        if ret is not None:
+            if len(ret)>0:
+                break
+            else:
+                if not return_at_least_one:
+                    break
+        else:
+            if not cant_cancel:
+                break
+    return ret
