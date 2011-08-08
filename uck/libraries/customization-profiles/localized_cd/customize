@@ -139,29 +139,8 @@ if [ -n "$LIVECD_LANGS" ]; then
 fi
 
 if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
-	while true ; do
-		CHOICE_PACKAGE_MANAGER="Run package manager"
-		CHOICE_CONSOLE="Run console application"
-		CHOICE_EXIT="Continue building"
-		CHOICE=`dialog_menu "Please choose customization action" "$CHOICE_PACKAGE_MANAGER" "$CHOICE_CONSOLE" "$CHOICE_EXIT"`
-		RESULT=$?
-
-		if [ $RESULT -ne 0 ] ; then
-			failure "Script cancelled by user"
-		fi
-		#workaround for KDE bug (https://bugs.kde.org/show_bug.cgi?id=139025)
-		CHOICE=`echo "$CHOICE" | grep -v -i kwrited | tail -n1`
-
-		echo "CHOICE='$CHOICE'"
-
-		if [ "$CHOICE" = "$CHOICE_EXIT" ] ; then
-			break
-		elif [ "$CHOICE" = "$CHOICE_PACKAGE_MANAGER" ] ; then
-			run_package_manager
-		elif [ "$CHOICE" = "$CHOICE_CONSOLE" ] ; then
-			run_console
-		fi
-	done
+	eval `dbus-launch --sh-syntax --exit-with-session 2>/dev/null`
+	gnome-session
 fi
 
 echo "Done"
