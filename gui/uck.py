@@ -1,8 +1,12 @@
 import subprocess
 import os
+import shutil
 from collections import namedtuple
 
 def set_path():
+    global SCRIPTS_DIR
+    global LIBRARIES_DIR
+
     if os.path.isdir("uck"):
         assert os.path.isfile("uck/libraries/gui.sh")
         SCRIPTS_DIR= "uck"
@@ -58,14 +62,54 @@ def remove_packages(packages):
     command= "apt-get --purge remove --assume-yes --force-yes {0}".format(" ".join(packages))
     shell(command, assert_returncode=True)
 
-def xauth_cookie():
+def check_iso(filename):
+     nl= shell("isoinfo -p -i \"$ISO_IMAGE\" | grep -i CASPER | wc -l").stdout
+     if int(nl)==0:
+         raise Exception("Cannot customize this ISO - unknown iso structure")
 
+def xauth_cookie():
     return shell("xauth extract - $DISPLAY")
 
+def write_var(var, filename):
+    if type(var)==bool:
+        var= "yes" if var else "no"
+    elif type(var)==list:
+        assert all(lambda x: type(x)==str, var)
+        var= " ".join(var)
+    open(filename, "w").write(var)
 
-def run_customization(build_dir, language_packs, livecd_locale, livecd_locales, remove_win32_files="no", iso_description="Customized live CD"):
-    pass
-    #TODO
+def run_customization(remaster_dir, source_iso, remove_win32_files=False, iso_description="Customized live CD", run_graphical_customization=False, run_language_customization=False, language_packs=[], livecd_locales=[], livecd_locale="", desktop_types=["gnome","kde"],):
+    scripts_dir= SCRIPTS_DIR
+    libraries_dir= LIBRARIES_DIR
+    build_dir= remaster_dir+"/customization-scripts"
+
+    assert remaster_dir[-1]!="/"
+    if len(iso_description)>32:
+        raise Exception("ISO description too long (max 32 characters)")
+    try:
+        shutils.mkdir(remaster_dir)
+    except:
+        pass
+    shutil.rmtree(build_dir)
+    shutil.copytree(libraries_dir+"/customization-profiles/localized_cd/", build_dir )
+    if run_language_customization:
+        write_var(language_packs, build_dir+"/language_packs")
+        write_var(livecd_locales, build_dir+"/livecd_locales")
+        write_var(livecd_locale,  build_dir+"/livecd_locale")
+        write_var(desktop_types,  build_dir+"/desktop_types")
+    if run_graphical_customization:
+        write_var(True, build_dir+"/run_manual_customizations")
+        write_var(xauth_cookie(), build_dir+"/Xcookie")
+    write_var(iso_description,    build_dir+"/iso_description")
+    write_var(remove_win32_files, build_dir+"/remove_win32_files")
+    write_var(True,               build_dir+"/clean_desktop_manifest")
+    write_var("export DISPLAY=:0",build_dir+"/environment")
+
+    tmp= shell('''export UCK_USERNAME=$USER ; {scripts_dir}/uck-remaster "{source_iso}" "{build_dir}" "{remaster_dir}"'''.format( **locals() ))
+    if tmp.returncode!=0:
+        raise Exception("Build failure\n"+tmp.stdout+"\n\n"+tmp.stderr)
+
+
 
 
 set_path()
