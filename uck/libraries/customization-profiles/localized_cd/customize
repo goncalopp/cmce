@@ -40,35 +40,6 @@ function remove_packages()
 	apt-get --purge remove --assume-yes --force-yes "$@" || failure "apt-get remove $@ failed, error=$?"
 }
 
-function run_package_manager()
-{
-	echo "Starting package application..."
-	
-	PACKAGE_APP=`which adept`
-	PACKAGE_APP_OPTIONS=(--caption "UCK Package Manager")
-	if [ "$PACKAGE_APP" = "" ]; then
-		PACKAGE_APP=`which adept_manager`
-	fi
-	if [ "$PACKAGE_APP" = "" ]; then
-		PACKAGE_APP=`which kpackagekit`
-	fi
-	if [ "$PACKAGE_APP" = "" ]; then
-		PACKAGE_APP=`which synaptic`
-		PACKAGE_APP_OPTIONS=(-t "UCK Package manager")
-	fi
-	
-	if [ "$PACKAGE_APP" = "" ]; then
-		dialog_msgbox "Failure" "Unable to find any package manager application"
-	else
-		$PACKAGE_APP "${PACKAGE_APP_OPTIONS[@]}"
-		RESULT=$?
-	
-		if [ $RESULT -ne 0 ]; then
-			dialog_msgbox "Failure" "Running package application $PACKAGE_APP failed, error=$RESULT"
-		fi
-	fi
-}
-
 function run_console()
 {
 	echo "Starting console application..."
@@ -107,7 +78,6 @@ function run_console()
 }
 
 SCRIPT_DIR=`dirname "$0"`
-. "$SCRIPT_DIR/gui.sh"
 
 # Inherit environment
 [ -f "$SCRIPT_DIR/environment" ] &&
