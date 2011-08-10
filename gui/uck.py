@@ -71,11 +71,17 @@ def xauth_cookie():
     return shell("xauth extract - $DISPLAY", assert_returncode=True).stdout
 
 def write_var(var, filename):
-    if type(var)==bool:
+    if isinstance(var, basestring):
+        pass
+    elif type(var)==bool:
         var= "yes" if var else "no"
-    elif type(var)==list:
-        assert all(lambda x: type(x)==str, var)
+    elif type(var)==list or type(var)==tuple:
+        assert all(map(lambda x: type(x)==str, var))
         var= " ".join(var)
+    elif var is None:
+        var= ""
+    else:
+        raise Exception("Unrecognized variable type")
     open(filename, "w").write(var)
 
 def run_customization(remaster_dir, source_iso, remove_win32_files=False, iso_description="Customized live CD", run_graphical_customization=False, run_language_customization=False, language_packs=[], livecd_locales=[], livecd_locale="", desktop_types=["gnome","kde"], print_output=True):
