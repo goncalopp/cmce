@@ -27,9 +27,10 @@ def choose_languages():
 
 def start_customization():
     iso_file= get_iso()
+    cust_dir= os.path.expanduser("~/tmp")   #MUST be absolute path
     if not check_iso(iso_file):
          return
-    args= {"remaster_dir":"tmp", "source_iso":iso_file}
+    args= {"remaster_dir":cust_dir, "source_iso":iso_file}
     if change_language():
         lp, bl, dbl= choose_languages()
         args.update({"run_language_customization":True, "language_packs":lp, "livecd_locales":bl, "livecd_locale": dbl})
