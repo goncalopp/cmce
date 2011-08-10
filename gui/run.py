@@ -3,43 +3,55 @@ import sys, os
 from PyQt4 import QtGui
 from PyQt4.QtCore import QObject, QString, SIGNAL
 from main import  Ui_MainWindow
+from gui_library.input  import choice
+from gui_library.output import error
 
 
+def check_iso(filename):
+    if not filename:
+        error(myapp, "Please select a ISO image")
+        return False
+    if not os.path.exists(filename):
+       error(myapp, "Could not open the selected ISO image")
+       return False
+    return True
 
-def event_browse_click():
+def start_customization():
+    iso_file= get_iso()
+    if not check_iso(iso_file):
+         return
+
+
+#------GUI FUNCTIONS-------------------------------------------------
+
+
+def browse_iso():
     filename= QtGui.QFileDialog().getOpenFileName(None, "Select ISO", "", "ISO image (*.iso)")
     if filename:
-        myapp.ui.pathEdit.setText(filename)
+        myapp.pathEdit.setText(filename)
 
-def event_start_click():
-    filename= myapp.ui.pathEdit.text()
-    m= QtGui.QErrorMessage()
-    if not filename:
-        QtGui.QMessageBox.critical(myapp, "Please select a ISO image", "Please select a ISO image")
-    elif not os.path.exists(filename):
-        QtGui.QMessageBox.critical(myapp, "Could not open the selected ISO image", "Could not open the selected ISO image")
-    else:
-        #all good
-        myapp.ui.progressBar.setValue(100)
+def get_iso():
+    return myapp.pathEdit.text()
 
+def set_progress(fraction):
+    assert 0<=fraction<=1
+    myapp.progressBar.setValue( int(100*fraction) )
 
-
-class MyMainWindow(QtGui.QMainWindow):
-    def __init__(self, parent=None):
+class MyMainWindow(Ui_MainWindow, QtGui.QMainWindow):
+    def __init__(self):
         QtGui.QMainWindow.__init__(self)
-        self.ui= Ui_MainWindow()
-        self.ui.setupUi(self)
+        self.setupUi(self)
+        self.setupSignals()
 
     def setupSignals(self):
-        QObject.connect(self.ui.browseButton, SIGNAL("clicked()"), event_browse_click)
-        QObject.connect(self.ui.startButton, SIGNAL("clicked()"), event_start_click)
+        QObject.connect(self.browseButton, SIGNAL("clicked()"), browse_iso)
+        QObject.connect(self.startButton, SIGNAL("clicked()"), start_customization)
 
 
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     myapp = MyMainWindow()
-    myapp.setupSignals()
     myapp.show()
     sys.exit(app.exec_())
 
