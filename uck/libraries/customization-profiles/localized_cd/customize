@@ -140,7 +140,13 @@ fi
 
 if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
 	eval `dbus-launch --sh-syntax --exit-with-session 2>/dev/null`
+	apt-get update || apt-get update
+	apt-get install xvfb x11vnc
+	export DISPLAY=:5
+	Xvfb :1 -screen 0 1024x768x16 &
+	x11vnc -display :1 -bg -nopw -listen localhost -xkb
 	gnome-session
+	apt-get purge xvfb x11vnc
 fi
 
 echo "Done"
