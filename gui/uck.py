@@ -21,7 +21,6 @@ def set_path():
         raise Exception("UCK doesn't seem to be installed")
 
 
-
 def shell(s, inp=None, assert_returncode=False):
     shellreturn= namedtuple("shellreturn", "stdout stderr returncode")
     p= subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
@@ -68,7 +67,7 @@ def check_iso(filename):
          raise Exception("Cannot customize this ISO - unknown iso structure")
 
 def xauth_cookie():
-    return shell("xauth extract - $DISPLAY")
+    return shell("xauth extract - $DISPLAY", assert_returncode=True).stdout
 
 def write_var(var, filename):
     if type(var)==bool:
@@ -86,11 +85,13 @@ def run_customization(remaster_dir, source_iso, remove_win32_files=False, iso_de
     assert remaster_dir[-1]!="/"
     if len(iso_description)>32:
         raise Exception("ISO description too long (max 32 characters)")
-    try:
-        shutils.mkdir(remaster_dir)
-    except:
-        pass
-    shutil.rmtree(build_dir)
+    if not os.path.exists(remaster_dir):
+        os.mkdir(remaster_dir)
+    else:
+        if os.path.exists(build_dir):
+            print "removing old build dir..."
+            shutil.rmtree(build_dir)
+    print "copying scripts, writing var..."
     shutil.copytree(libraries_dir+"/customization-profiles/localized_cd/", build_dir )
     if run_language_customization:
         write_var(language_packs, build_dir+"/language_packs")
@@ -105,9 +106,13 @@ def run_customization(remaster_dir, source_iso, remove_win32_files=False, iso_de
     write_var(True,               build_dir+"/clean_desktop_manifest")
     write_var("export DISPLAY=:0",build_dir+"/environment")
 
-    tmp= shell('''export UCK_USERNAME=$USER ; {scripts_dir}/uck-remaster "{source_iso}" "{build_dir}" "{remaster_dir}"'''.format( **locals() ))
-    if tmp.returncode!=0:
-        raise Exception("Build failure\n"+tmp.stdout+"\n\n"+tmp.stderr)
+    print "starting UCK build..."
+    command= '''export UCK_USERNAME=$USER ; {scripts_dir}/uck-remaster "{source_iso}" "{build_dir}" "{remaster_dir}"'''.format( **locals() )
+    outpipe= subprocess.PIPE
+    process= subprocess.Popen(command, shell=True, stdout=outpipe, stderr=outpipe)
+    return process
+    #if tmp.returncode!=0:
+    #    raise Exception("Build failure\n"+tmp.stdout+"\n\n"+tmp.stderr)
 
 
 

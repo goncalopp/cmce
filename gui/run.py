@@ -29,8 +29,24 @@ def start_customization():
     iso_file= get_iso()
     if not check_iso(iso_file):
          return
+    args= {"remaster_dir":"tmp", "source_iso":iso_file}
     if change_language():
-        choose_languages()
+        lp, bl, dbl= choose_languages()
+        args.update({"run_language_customization":True, "language_packs":lp, "livecd_locales":bl, "livecd_locale": dbl})
+    if  run_graphic_customization():
+        args.update({"run_graphical_customization":True})
+
+    print "CUSTOMIZATION STARTED WITH ARGS:", args
+    c_process= uck.run_customization(**args)
+    while True:
+        for pipe in (c_process.stdout, c_process.stderr):
+            l= pipe.readline()
+            if len(l):
+                print l
+        if not c_process.poll() is None:
+            print "RETURN CODE: ", c_process.wait()
+            break
+
 #------GUI FUNCTIONS-------------------------------------------------
 
 
@@ -48,6 +64,9 @@ def set_progress(fraction):
 
 def change_language():
     return myapp.languageCheck.isChecked()
+
+def run_graphic_customization():
+    return myapp.graphicalCheck.isChecked()
 
 class MyMainWindow(Ui_MainWindow, QtGui.QMainWindow):
     def __init__(self):
