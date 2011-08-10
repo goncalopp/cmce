@@ -33,7 +33,7 @@ def start_customization():
     args= {"remaster_dir":cust_dir, "source_iso":iso_file}
     if change_language():
         lp, bl, dbl= choose_languages()
-        args.update({"run_language_customization":True, "language_packs":lp, "livecd_locales":bl, "livecd_locale": dbl})
+        args.update({"language_packs":lp, "livecd_locales":bl, "livecd_locale": dbl})
     if  run_graphic_customization():
         args.update({"run_graphical_customization":True})
 

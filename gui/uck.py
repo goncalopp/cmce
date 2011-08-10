@@ -84,7 +84,7 @@ def write_var(var, filename):
         raise Exception("Unrecognized variable type")
     open(filename, "w").write(var)
 
-def run_customization(remaster_dir, source_iso, remove_win32_files=False, iso_description="Customized live CD", run_graphical_customization=False, run_language_customization=False, language_packs=[], livecd_locales=[], livecd_locale="", desktop_types=["gnome","kde"], print_output=True):
+def run_customization(remaster_dir, source_iso, remove_win32_files=False, iso_description="Customized live CD", run_graphical_customization=False, language_packs=[], livecd_locales=[], livecd_locale=None, desktop_types=["gnome","kde"], print_output=True):
     scripts_dir= SCRIPTS_DIR
     libraries_dir= LIBRARIES_DIR
     build_dir= remaster_dir+"/customization-scripts"
@@ -100,14 +100,16 @@ def run_customization(remaster_dir, source_iso, remove_win32_files=False, iso_de
             shutil.rmtree(build_dir)
     print "copying scripts, writing var..."
     shutil.copytree(libraries_dir+"/customization-profiles/localized_cd/", build_dir )
-    if run_language_customization:
-        write_var(language_packs, build_dir+"/language_packs")
-        write_var(livecd_locales, build_dir+"/livecd_locales")
-        write_var(livecd_locale,  build_dir+"/livecd_locale")
-        write_var(desktop_types,  build_dir+"/desktop_types")
+
+    write_var(language_packs, build_dir+"/language_packs")
+    write_var(livecd_locales, build_dir+"/livecd_locales")
+    write_var(livecd_locale,  build_dir+"/livecd_locale")
+    write_var(desktop_types,  build_dir+"/desktop_types")
+
+    write_var(run_graphical_customization, build_dir+"/run_manual_customizations")
     if run_graphical_customization:
-        write_var(True, build_dir+"/run_manual_customizations")
         write_var(xauth_cookie(), build_dir+"/Xcookie")
+
     write_var(iso_description,    build_dir+"/iso_description")
     write_var(remove_win32_files, build_dir+"/remove_win32_files")
     write_var(True,               build_dir+"/clean_desktop_manifest")
