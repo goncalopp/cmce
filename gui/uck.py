@@ -1,6 +1,7 @@
 import subprocess
 import os
 import shutil
+import sys
 from collections import namedtuple
 
 def set_path():
@@ -77,7 +78,7 @@ def write_var(var, filename):
         var= " ".join(var)
     open(filename, "w").write(var)
 
-def run_customization(remaster_dir, source_iso, remove_win32_files=False, iso_description="Customized live CD", run_graphical_customization=False, run_language_customization=False, language_packs=[], livecd_locales=[], livecd_locale="", desktop_types=["gnome","kde"],):
+def run_customization(remaster_dir, source_iso, remove_win32_files=False, iso_description="Customized live CD", run_graphical_customization=False, run_language_customization=False, language_packs=[], livecd_locales=[], livecd_locale="", desktop_types=["gnome","kde"], print_output=True):
     scripts_dir= SCRIPTS_DIR
     libraries_dir= LIBRARIES_DIR
     build_dir= remaster_dir+"/customization-scripts"
@@ -108,8 +109,10 @@ def run_customization(remaster_dir, source_iso, remove_win32_files=False, iso_de
 
     print "starting UCK build..."
     command= '''export UCK_USERNAME=$USER ; {scripts_dir}/uck-remaster "{source_iso}" "{build_dir}" "{remaster_dir}"'''.format( **locals() )
-    outpipe= subprocess.PIPE
-    process= subprocess.Popen(command, shell=True, stdout=outpipe, stderr=outpipe)
+    if print_output:
+        process= subprocess.Popen(command, shell=True, stdout=sys.stdout, stderr=sys.stderr)
+    else:
+        process= subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return process
     #if tmp.returncode!=0:
     #    raise Exception("Build failure\n"+tmp.stdout+"\n\n"+tmp.stderr)

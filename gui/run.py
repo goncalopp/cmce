@@ -38,14 +38,13 @@ def start_customization():
 
     print "CUSTOMIZATION STARTED WITH ARGS:", args
     c_process= uck.run_customization(**args)
-    while True:
-        for pipe in (c_process.stdout, c_process.stderr):
-            l= pipe.readline()
-            if len(l):
-                print l
-        if not c_process.poll() is None:
-            print "RETURN CODE: ", c_process.wait()
-            break
+    #while True:
+    #    a,b= [pipe.readline() for pipe in (c_process.stdout, c_process.stderr)]
+    #    if not (a or b):
+    #        break
+    #    print (a if a else b),
+    print "RETURN CODE: ", c_process.wait()
+
 
 #------GUI FUNCTIONS-------------------------------------------------
 
