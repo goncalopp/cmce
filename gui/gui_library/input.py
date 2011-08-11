@@ -61,7 +61,8 @@ def choice(str_list, text="Select a option:", title="Select a option", buttons= 
                 return texts
         w.returnValue= returnValue
         return w
-    return baseDialog( None, title, text, create_widget, buttons)
+    qt_str_list= baseDialog( None, title, text, create_widget, buttons)
+    return map(unicode, qt_str_list)
 
 def force_choice(cant_cancel=True, return_at_least_one= True, *args, **kwargs):
     '''repeats choice() until conditions are met'''
