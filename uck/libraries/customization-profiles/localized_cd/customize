@@ -138,16 +138,27 @@ if [ -n "$LIVECD_LANGS" ]; then
 		failure "Removing packages failed, error=$?"
 fi
 
+
+
 if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
 	eval `dbus-launch --sh-syntax --exit-with-session 2>/dev/null`
-	#TODO: add universe repository
+	#enable universe repository to install xvfb, x11vnc
+	cp -a /etc/apt/sources.list sources.list.bak
+	sed 's/^#deb \(.*\)caixamagica\.pt\(.*\)universe/deb \1caixamagica.pt\2universe/' sources.list.bak > /etc/apt/sources.list
 	apt-get update || apt-get update
-	apt-get install xvfb x11vnc
-	export DISPLAY=:5
-	Xvfb :1 -screen 0 1024x768x16 &
-	x11vnc -display :1 -bg -nopw -listen localhost -xkb
+	install_packages xvfb x11vnc
+	export DISPLAY=:25
+	Xvfb $DISPLAY -screen 0 800x600x16 &
+	XVFB_PID=$!
+	sleep 1
+	x11vnc -display $DISPLAY -nopw -listen localhost -xkb &
+	X11VNC_PID=$!
+	sleep 1
 	gnome-session
-	apt-get purge xvfb x11vnc
+	kill $X11VNC_PID
+	kill $XVFB_PID
+	remove_packages xvfb x11vnc
+	cp -a sources.list.bak /etc/apt/sources.list
 fi
 
 echo "Done"
