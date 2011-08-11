@@ -34,7 +34,7 @@ def shell(s, inp=None, assert_returncode=False):
     return shellreturn(o,e,r)
 
 def available_language_packs():
-    return shell('''apt-cache pkgnames language-support | egrep '^language-support-.{2,7}$' | cut -b 18- | sort''').split("\n")[:-1]
+    return shell('''apt-cache pkgnames language-support | egrep '^language-support-.{2,7}$' | cut -b 18- | sort''').stdout.split("\n")[:-1]
 
 def available_boot_languages():
     return open(LIBRARIES_DIR+"/langlist").read().split("\n")[:-1]
@@ -76,7 +76,7 @@ def write_var(var, filename):
     elif type(var)==bool:
         var= "yes" if var else "no"
     elif type(var)==list or type(var)==tuple:
-        assert all(map(lambda x: type(x)==str, var))
+        assert all(map(lambda x: isinstance(x, basestring), var))
         var= " ".join(var)
     elif var is None:
         var= ""
