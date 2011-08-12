@@ -116,7 +116,7 @@ def run_customization(remaster_dir, source_iso, remove_win32_files=False, iso_de
     write_var("export DISPLAY=:0",build_dir+"/environment")
 
     print "starting UCK build..."
-    command= '''export UCK_USERNAME=$USER ; {scripts_dir}/uck-remaster "{source_iso}" "{build_dir}" "{remaster_dir}"'''.format( **locals() )
+    command= '''export UCK_USERNAME=$USER ; gksudo {scripts_dir}/uck-remaster "{source_iso}" "{build_dir}" "{remaster_dir}"'''.format( **locals() )
     if print_output:
         process= subprocess.Popen(command, shell=True, stdout=sys.stdout, stderr=sys.stderr)
     else:
