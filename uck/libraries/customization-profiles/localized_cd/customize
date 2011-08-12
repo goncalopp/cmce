@@ -145,15 +145,19 @@ if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
 	#enable universe repository to install xvfb, x11vnc
 	cp -a /etc/apt/sources.list sources.list.bak
 	sed 's/^#deb \(.*\)caixamagica\.pt\(.*\)universe/deb \1caixamagica.pt\2universe/' sources.list.bak > /etc/apt/sources.list
+	VNC_PORT=21693
+	VNC_ALLOW_IP=127.0.0.1
+	export DISPLAY=:25
+	#TODO: create user, su to it, etc
 	apt-get update || apt-get update
 	install_packages xvfb x11vnc
-	export DISPLAY=:25
 	Xvfb $DISPLAY -screen 0 800x600x16 &
 	XVFB_PID=$!
 	sleep 1
-	x11vnc -display $DISPLAY -nopw -listen localhost -xkb &
+	x11vnc -display $DISPLAY -rfbport $VNC_PORT -nopw -listen $VNC_ALLOW_IP -xkb &
 	X11VNC_PID=$!
 	sleep 1
+	#TODO: kde, etc
 	gnome-session
 	kill $X11VNC_PID
 	kill $XVFB_PID
