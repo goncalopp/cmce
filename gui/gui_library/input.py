@@ -47,14 +47,24 @@ CANCEL_CODE= lambda : globals()['dialog'].done(0)
 
 def choice(str_list, text="Select a option:", title="Select a option", buttons= (("OK",OK_CODE),), multi_choice=False, return_index=False):
     #return QtGui.QInputDialog.getItem(None, title, text, str_list)._exec()
-    print str_list, text, title, multi_choice, return_index
-    def create_widget():
-        w= QtGui.QListWidget()
-        [w.addItem(s) for s in str_list]
+    model= QtGui.QStandardItemModel()
+    for s in str_list:
+        item= QtGui.QStandardItem(s)
         if multi_choice:
-            w.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
+            item.setCheckable(True)
+        model.appendRow(item)
+    def create_widget():
+        w= QtGui.QListView()
+        w.setModel(model)
+        #if multi_choice:
+        #    w.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
         def returnValue():
-            texts= [i.text() for i in w.selectedItems()]
+            items= [model.item(i) for i in xrange(model.rowCount())]
+            if multi_choice:
+                texts= [item.text() for item in items if item.checkState()]
+            else:
+                
+                texts= [items[mi.row()].text() for mi in w.selectedIndexes()]
             if return_index:
                 return map(str_list.index, map(unicode, texts))
             else:
@@ -62,6 +72,7 @@ def choice(str_list, text="Select a option:", title="Select a option", buttons= 
         w.returnValue= returnValue
         return w
     qt_str_list= baseDialog( None, title, text, create_widget, buttons)
+    print qt_str_list
     return map(unicode, qt_str_list)
 
 def force_choice(cant_cancel=True, return_at_least_one= True, *args, **kwargs):
