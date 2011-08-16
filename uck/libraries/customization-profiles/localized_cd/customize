@@ -141,16 +141,18 @@ fi
 
 
 if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
+	export DISPLAY=:25
+	VNC_PORT=21693
+	VNC_ALLOW_IP=127.0.0.1
+	CUSTOMIZATION_USER=customization-user
 	eval `dbus-launch --sh-syntax --exit-with-session 2>/dev/null`
 	#enable universe repository to install xvfb, x11vnc
 	cp -a /etc/apt/sources.list sources.list.bak
 	sed 's/^#deb \(.*\)caixamagica\.pt\(.*\)universe/deb \1caixamagica.pt\2universe/' sources.list.bak > /etc/apt/sources.list
-	VNC_PORT=21693
-	VNC_ALLOW_IP=127.0.0.1
-	export DISPLAY=:25
 	#TODO: create user, su to it, etc
 	apt-get update || apt-get update
 	install_packages xvfb x11vnc
+	useradd $CUSTOMIZATION_USER --create-home
 	Xvfb $DISPLAY -screen 0 800x600x16 &
 	XVFB_PID=$!
 	sleep 1
@@ -158,11 +160,13 @@ if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
 	X11VNC_PID=$!
 	sleep 1
 	#TODO: kde, etc
-	gnome-session
+	echo "running graphical environment..."
+	sudo -u $CUSTOMIZATION_USER gnome-session
 	kill $X11VNC_PID
 	kill $XVFB_PID
 	remove_packages xvfb x11vnc
 	cp -a sources.list.bak /etc/apt/sources.list
+	userdel --remove $CUSTOMIZATION_USER
 fi
 
 echo "Done"
