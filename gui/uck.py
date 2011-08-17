@@ -84,14 +84,38 @@ def write_var(var, filename):
         raise Exception("Unrecognized variable type")
     open(filename, "w").write(var)
 
-def run_customization(remaster_dir, source_iso, remove_win32_files=False, iso_description="Customized live CD", run_graphical_customization=False, language_packs=[], livecd_locales=[], livecd_locale=None, desktop_types=["gnome","kde"], print_output=True):
+def start_customization(progress_callback, **kwargs):
+    assert callable(progress_callback)
+    read_pipe_fd, write_pipe_fd= os.pipe()
+    pid=os.fork()
+    if pid==0:
+        os.close(read_pipe_fd)
+        write_pipe= os.fdopen(write_pipe_fd, 'w')
+        sys.stdout= sys.stderr= write_pipe
+        returncode= customization_process(**kwargs)
+        os._exit( returncode )
+    else:
+        os.close(write_pipe_fd)
+        read_pipe= os.fdopen(read_pipe_fd, 'r')
+        while True:
+            line= read_pipe.readline()
+            if line=='':
+                break
+            progress_callback(line)
+        returncode= os.waitpid(pid, 0)
+        print "PROCESS RETURNED", returncode
+        return returncode
+
+def customization_process(remaster_dir, source_iso, remove_win32_files=False, iso_description="Customized live CD", run_graphical_customization=False, language_packs=[], livecd_locales=[], livecd_locale=None, desktop_types=["gnome","kde"]):
+    print "customization process started"; sys.stdout.flush()
     scripts_dir= SCRIPTS_DIR
     libraries_dir= LIBRARIES_DIR
     build_dir= remaster_dir+"/customization-scripts"
 
     assert remaster_dir[-1]!="/"
     if len(iso_description)>32:
-        raise Exception("ISO description too long (max 32 characters)")
+        print "ISO description too long (max 32 characters)"
+        return 1
     if not os.path.exists(remaster_dir):
         os.mkdir(remaster_dir)
     else:
@@ -117,13 +141,9 @@ def run_customization(remaster_dir, source_iso, remove_win32_files=False, iso_de
 
     print "starting UCK build..."
     command= '''export UCK_USERNAME=$USER ; gksudo {scripts_dir}/uck-remaster "{source_iso}" "{build_dir}" "{remaster_dir}"'''.format( **locals() )
-    if print_output:
-        process= subprocess.Popen(command, shell=True, stdout=sys.stdout, stderr=sys.stderr)
-    else:
-        process= subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    return process
-    #if tmp.returncode!=0:
-    #    raise Exception("Build failure\n"+tmp.stdout+"\n\n"+tmp.stderr)
+    process= subprocess.Popen(command, shell=True, stdout=sys.stdout, stderr=sys.stderr)
+    returncode= process.wait()
+    return returncode
 
 
 

@@ -38,17 +38,11 @@ def start_customization():
         args.update({"run_graphical_customization":True})
 
     print "CUSTOMIZATION STARTED WITH ARGS:", args
-    c_process= uck.run_customization(**args)
-    #while True:
-    #    a,b= [pipe.readline() for pipe in (c_process.stdout, c_process.stderr)]
-    #    if not (a or b):
-    #        break
-    #    print (a if a else b),
-    print "RETURN CODE: ", c_process.wait()
-
+    def progress_callback(x):
+        print(x),
+    uck.start_customization(progress_callback, **args)
 
 #------GUI FUNCTIONS-------------------------------------------------
-
 
 def browse_iso():
     filename= QtGui.QFileDialog().getOpenFileName(None, "Select ISO", "", "ISO image (*.iso)")
