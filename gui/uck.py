@@ -1,8 +1,6 @@
-import subprocess
-import os
 import shutil
-import sys
-from collections import namedtuple
+import sys, os
+from process_utils import shell
 
 def set_path():
     global SCRIPTS_DIR
@@ -21,17 +19,6 @@ def set_path():
     else:
         raise Exception("UCK doesn't seem to be installed")
 
-
-def shell(s, inp=None, assert_returncode=False):
-    shellreturn= namedtuple("shellreturn", "stdout stderr returncode")
-    p= subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-    if inp:
-        p.stdin.write(inp)
-    p.stdin.close()
-    o,e,r=  p.stdout.read(), p.stderr.read(), p.wait()
-    if assert_returncode and r!=0:
-        raise Exception("return code != 0 in command: \n\n"+s+"\n\nstdout:\n"+o+"\n\nstderr:\n"+e+"\n\nreturncode:\n"+str(r))
-    return shellreturn(o,e,r)
 
 def available_language_packs():
     return shell('''apt-cache pkgnames language-support | egrep '^language-support-.{2,7}$' | cut -b 18- | sort''').stdout.split("\n")[:-1]
@@ -84,29 +71,8 @@ def write_var(var, filename):
         raise Exception("Unrecognized variable type")
     open(filename, "w").write(var)
 
-def start_customization(progress_callback, **kwargs):
-    assert callable(progress_callback)
-    read_pipe_fd, write_pipe_fd= os.pipe()
-    pid=os.fork()
-    if pid==0:
-        os.close(read_pipe_fd)
-        write_pipe= os.fdopen(write_pipe_fd, 'w')
-        sys.stdout= sys.stderr= write_pipe
-        returncode= customization_process(**kwargs)
-        os._exit( returncode )
-    else:
-        os.close(write_pipe_fd)
-        read_pipe= os.fdopen(read_pipe_fd, 'r')
-        while True:
-            line= read_pipe.readline()
-            if line=='':
-                break
-            progress_callback(line)
-        returncode= os.waitpid(pid, 0)
-        print "PROCESS RETURNED", returncode
-        return returncode
 
-def customization_process(remaster_dir, source_iso, remove_win32_files=False, iso_description="Customized live CD", run_graphical_customization=False, language_packs=[], livecd_locales=[], livecd_locale=None, desktop_types=["gnome","kde"]):
+def customization(remaster_dir, source_iso, remove_win32_files=False, iso_description="Customized live CD", run_graphical_customization=False, language_packs=[], livecd_locales=[], livecd_locale=None, desktop_types=["gnome","kde"]):
     print "customization process started"; sys.stdout.flush()
     scripts_dir= SCRIPTS_DIR
     libraries_dir= LIBRARIES_DIR

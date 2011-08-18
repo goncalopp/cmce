@@ -5,6 +5,7 @@ from PyQt4.QtCore import QObject, QString, SIGNAL
 from main import  Ui_MainWindow
 from gui_library.input  import choice, force_choice
 from gui_library.output import error
+from process_utils import run_function_with_callback_on_output
 import uck
 
 def check_iso(filename):
@@ -40,7 +41,9 @@ def start_customization():
     print "CUSTOMIZATION STARTED WITH ARGS:", args
     def progress_callback(x):
         print(x),
-    uck.start_customization(progress_callback, **args)
+    import uck_progressmonitor
+    #print uck_progressmonitor.profile_customization(**args)
+    run_function_with_callback_on_output( uck.customization, (), args, progress_callback)
 
 #------GUI FUNCTIONS-------------------------------------------------
 
