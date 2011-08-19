@@ -40,7 +40,7 @@ def start_customization():
 
     print "CUSTOMIZATION STARTED WITH ARGS:", args
     def progress_callback(x):
-        print(x),
+        print(x)
     import uck_progressmonitor
     #print uck_progressmonitor.profile_customization(**args)
     run_function_with_callback_on_output( uck.customization, (), args, progress_callback)
