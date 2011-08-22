@@ -74,7 +74,7 @@ def write_var(var, filename):
 
 
 def customization(remaster_dir, source_iso, remove_win32_files=False, iso_description="Customized live CD", run_graphical_customization=False, language_packs=[], livecd_locales=[], livecd_locale=None, desktop_types=["gnome","kde"]):
-    print "customization process started"; sys.stdout.flush()
+    print "customization process started"
     scripts_dir= SCRIPTS_DIR
     libraries_dir= LIBRARIES_DIR
     build_dir= remaster_dir+"/customization-scripts"
