@@ -128,11 +128,13 @@ check_exit_code
 # unpacking #
 #############
 
+echo tick
 if [ "$CUSTOMIZE_ISO" = "yes" ] ; then
 	$SCRIPTS_DIR/uck-remaster-unpack-iso $use_mount "$ISO_IMAGE" "$REMASTER_HOME"
 	check_exit_code
 fi
 
+echo tick
 if [ "$CUSTOMIZE_ISO" = "yes" ] && [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
 	$SCRIPTS_DIR/uck-remaster-unpack-rootfs $use_mount "$REMASTER_HOME"
 	check_exit_code
@@ -142,11 +144,13 @@ fi
 # customizing #
 ###############
 
+echo tick
 if [ "$REMOVE_WIN32_FILES" = "yes" ]; then
 	"$SCRIPTS_DIR/uck-remaster-remove-win32-files" "$REMASTER_HOME"
 	check_exit_code
 fi
 
+echo tick
 if [ "$CUSTOMIZE_ISO" = "yes" ] && [ "$CUSTOMIZE_ROOTFS" = "yes" ]; then
 	if [ "$COPY_CUSTOMIZE_DIR" = "yes" ]; then
 		cp -a "$CUSTOMIZE_DIR" "$REMASTER_HOME/customization-scripts"
@@ -157,6 +161,7 @@ if [ "$CUSTOMIZE_ISO" = "yes" ] && [ "$CUSTOMIZE_ROOTFS" = "yes" ]; then
 	check_exit_code
 fi
 
+echo tick
 if [ "$CUSTOMIZE_ISO" = "yes" ] ; then
 	echo "Running ISO customization script $CUSTOMIZE_DIR/customize_iso..."
 	"$CUSTOMIZE_DIR/customize_iso" "$REMASTER_HOME"
@@ -169,11 +174,13 @@ if [ "$MANUAL_CUSTOMIZATION_PAUSE" = "yes" ] ; then
 	read DUMMY
 fi
 
+echo tick
 if [ "$CUSTOMIZE_INITRD" = "yes" ] ; then
 	$SCRIPTS_DIR/uck-remaster-unpack-initrd "$REMASTER_HOME"
 	check_exit_code
 fi
 
+echo tick
 if [ "$CUSTOMIZE_INITRD" = "yes" ]; then
 	echo "Running initrd customization script $CUSTOMIZE_DIR/customize_initrd..."
 	"$CUSTOMIZE_DIR/customize_initrd" "$REMASTER_HOME"
@@ -185,11 +192,13 @@ fi
 # packing #
 ###########
 
+echo tick
 if [ "$CUSTOMIZE_INITRD" = "yes" ] ; then
 	$SCRIPTS_DIR/uck-remaster-pack-initrd "$REMASTER_HOME"
 	check_exit_code
 fi
 
+echo tick
 if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
 	if [ "$CLEAN_DESKTOP_MANIFEST" = "yes" ]; then
 		$SCRIPTS_DIR/uck-remaster-pack-rootfs -c "$REMASTER_HOME"
@@ -206,6 +215,7 @@ check_exit_code
 # finishing #
 #############
 
+echo tick
 if [ "$COPY_CUSTOMIZE_DIR" = "yes" ]; then
 	# since we copied the customization-scripts dir from outside
 	# can can safely remove it to leave the REMASTER_HOME as it was
