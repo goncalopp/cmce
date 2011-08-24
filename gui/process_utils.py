@@ -62,10 +62,12 @@ def run_function_with_callback_on_output(function, args, kwargs, callback):
         read_pipe_file= os.fdopen(parent_pipe, 'r')
         p= multiprocessing.Process(target=redirect_output_and_run, args=(function, args, kwargs, write_pipe_file))
         p.start()
+        write_pipe_file.close()
         while p.is_alive():
             try:
-                line= read_pipe_file.readline().rstrip("\n")
-                callback(line)
+                line= read_pipe_file.readline()
+                if line!="":
+                    callback(line.rstrip("\n"))
             except:    #
                 pass
         p.join()    #can't hurt
