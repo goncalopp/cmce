@@ -13,6 +13,9 @@ class ProgressProfile(object):
          self.weights= tick_weights
          self.tick_str= tick_str
 
+    def __repr__(self):
+        return ", ".join(["%.2f"%(weight,) for weight in self.weights])
+
 def profile(function, args, kwargs, tick_str=DEFAULT_TICK_STR):
     '''creates a new ProgressPofile for the given function with the given args'''
     global tick_number
