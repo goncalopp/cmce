@@ -42,21 +42,25 @@ def profile(function, args, kwargs, tick_str=DEFAULT_TICK_STR):
     return ProgressProfile(tick_number, weights, tick_str)
 
 
-def run(function, args, kwargs, profile, progress_callback):
+def run(function, args, kwargs, profile, callback):
     '''runs the given function with the given arguments, using the given ProgressProfile to estimate the progress. Calls progress_callback with a float progress vector (0..1) each time the progress is updated'''
-    assert isinstance(progress_profile, ProgressProfile)
-    assert callable(progress_callback)
+    assert isinstance(profile, ProgressProfile)
+    assert callable(callback)
     progress=0
-    total=float( sum(progress_profile.weights))
+    total=float( sum(profile.weights))
     tick_index=0
     def monitor(x):
         if x==profile.tick_str:
+            if tick_index >= len(profile.weights):
+                raise Exception("number of ticks received exceeds the expected")
+            logging.debug("progress: tick")
             progress+= profile.weights[tick_index]
             tick_index+=1
             progress_vector= progress / total
             callback( progress_vector )
         else:
             #can have other strings...
+            logging.debug("progress: other string: "+ x)
             pass
     process_utils.run_function_with_callback_on_output(function, args, kwargs, monitor)
 
