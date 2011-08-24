@@ -1,12 +1,22 @@
-#!/usr/bin/python
+#!/usr/bin/python   i
+
+PROGRESSPROFILE_FILE= "progress_profile.pickle"
+
 import sys, os
+import pickle
+import logging
+
 from PyQt4 import QtGui
 from PyQt4.QtCore import QObject, QString, SIGNAL
+
 from main import  Ui_MainWindow
 from gui_library.input  import choice, force_choice
 from gui_library.output import error
 from process_utils import run_function_with_callback_on_output
 import uck
+import uck_progressmonitor
+
+logging.basicConfig(level=logging.DEBUG)
 
 def check_iso(filename):
     if not filename:
@@ -40,10 +50,15 @@ def start_customization():
 
     print "CUSTOMIZATION STARTED WITH ARGS:", args
     def progress_callback(x):
-        print(x)
-    import uck_progressmonitor
-    #print uck_progressmonitor.profile_customization(**args)
-    run_function_with_callback_on_output( uck.customization, (), args, progress_callback)
+        set_progress(x)
+    do_profile=True
+    if do_profile:
+        profile= uck_progressmonitor.profile( uck.customization, (), args)
+        print "profile:",profile
+        pickle.dump( profile, open(PROGRESSPROFILE_FILE, "wb" ))
+    else:
+        profile= pickle.load( open( PROGRESSPROFILE_FILE, "rb"))
+        uck_progressmonitor.run( uck.customization, (), args, profile, progress_callback )
 
 #------GUI FUNCTIONS-------------------------------------------------
 
