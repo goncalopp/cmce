@@ -51,7 +51,7 @@ def start_customization():
     print "CUSTOMIZATION STARTED WITH ARGS:", args
     def progress_callback(x):
         set_progress(x)
-    do_profile=True
+    do_profile=False
     if do_profile:
         profile= uck_progressmonitor.profile( uck.customization, (), args)
         print "profile:",profile
