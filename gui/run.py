@@ -48,6 +48,8 @@ def start_customization():
     if  run_graphic_customization():
         args.update({"run_graphical_customization":True})
 
+    disable_interface()
+
     print "CUSTOMIZATION STARTED WITH ARGS:", args
     def progress_callback(x):
         set_progress(x)
@@ -60,7 +62,15 @@ def start_customization():
         profile= pickle.load( open( PROGRESSPROFILE_FILE, "rb"))
         uck_progressmonitor.run( uck.customization, (), args, profile, progress_callback )
 
+    enable_interface()
+
 #------GUI FUNCTIONS-------------------------------------------------
+
+def disable_interface():
+    myapp.startButton.setEnabled( False )
+
+def enable_interface():
+    myapp.startButton.setEnabled( True )
 
 def browse_iso():
     filename= QtGui.QFileDialog().getOpenFileName(None, "Select ISO", "", "ISO image (*.iso)")
