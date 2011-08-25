@@ -44,12 +44,16 @@ def profile(function, args, kwargs, tick_str=DEFAULT_TICK_STR):
 
 def run(function, args, kwargs, profile, callback):
     '''runs the given function with the given arguments, using the given ProgressProfile to estimate the progress. Calls progress_callback with a float progress vector (0..1) each time the progress is updated'''
+    global progress
+    global tick_index
     assert isinstance(profile, ProgressProfile)
     assert callable(callback)
     progress=0
     total=float( sum(profile.weights))
     tick_index=0
     def monitor(x):
+        global progress
+        global tick_index
         if x==profile.tick_str:
             if tick_index >= len(profile.weights):
                 raise Exception("number of ticks received exceeds the expected")
