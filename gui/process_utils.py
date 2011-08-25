@@ -58,7 +58,7 @@ def redirect_output_and_run(function, args, kwargs, file_object):
 def run_function_with_callback_on_output(function, args, kwargs, callback):
         '''See run_function_as_process. Executes the function, calling the callback function with each (stdout or stderr) line of output. Blocks until function has finished'''
         parent_pipe, child_pipe= os.pipe()
-        write_pipe_file= os.fdopen(child_pipe, 'w')
+        write_pipe_file= os.fdopen(child_pipe, 'w', 0) #no buffer, need instant feedback
         read_pipe_file= os.fdopen(parent_pipe, 'r')
         p= multiprocessing.Process(target=redirect_output_and_run, args=(function, args, kwargs, write_pipe_file))
         p.start()
