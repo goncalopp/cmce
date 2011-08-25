@@ -5,6 +5,7 @@ PROGRESSPROFILE_FILE= "progress_profile.pickle"
 import sys, os
 import pickle
 import logging
+import threading
 
 from PyQt4 import QtGui
 from PyQt4.QtCore import QObject, QString, SIGNAL
@@ -50,19 +51,21 @@ def start_customization():
 
     disable_interface()
 
-    print "CUSTOMIZATION STARTED WITH ARGS:", args
-    def progress_callback(x):
-        set_progress(x)
-    do_profile=False
-    if do_profile:
-        profile= uck_progressmonitor.profile( uck.customization, (), args)
-        print "profile:",profile
-        pickle.dump( profile, open(PROGRESSPROFILE_FILE, "wb" ))
-    else:
-        profile= pickle.load( open( PROGRESSPROFILE_FILE, "rb"))
-        uck_progressmonitor.run( uck.customization, (), args, profile, progress_callback )
-
-    enable_interface()
+    def run_function():
+        print "CUSTOMIZATION STARTED WITH ARGS:", args
+        def progress_callback(x):
+            set_progress(x)
+        do_profile=False
+        if do_profile:
+            profile= uck_progressmonitor.profile( uck.customization, (), args)
+            print "profile:",profile
+            pickle.dump( profile, open(PROGRESSPROFILE_FILE, "wb" ))
+        else:
+            profile= pickle.load( open( PROGRESSPROFILE_FILE, "rb"))
+            uck_progressmonitor.run( uck.customization, (), args, profile, progress_callback )
+        enable_interface()
+    t1= threading.Thread(target= run_function)
+    t1.start()
 
 #------GUI FUNCTIONS-------------------------------------------------
 
