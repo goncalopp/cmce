@@ -34,7 +34,7 @@ def profile(function, args, kwargs, tick_str=DEFAULT_TICK_STR):
             timedelta= time.time()-current_time
             current_time+= timedelta
             weights.append(timedelta)
-            logging.debug("PROFILING:"+str( tick_number) +str( timedelta))
+            logging.debug("PROFILING:"+str( tick_number)+ ": " +str( timedelta))
         else:
             pass
             logging.debug("OTHER STRING:"+str( x))
