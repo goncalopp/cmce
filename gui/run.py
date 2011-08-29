@@ -1,11 +1,12 @@
 #!/usr/bin/python   i
 
 PROGRESSPROFILE_FILE= "progress_profile.pickle"
+VNC_PROCESS= None
 
 import sys, os
 import pickle
 import logging
-import threading
+import threading, subprocess
 
 from PyQt4 import QtGui
 from PyQt4.QtCore import QObject, QString, SIGNAL
@@ -27,6 +28,15 @@ def check_iso(filename):
        error(myapp, "Could not open the selected ISO image")
        return False
     return True
+
+def run_vnc_process(host, port="5900"):
+    global VNC_PROCESS
+    assert VNC_PROCESS is None
+    VNC_PROCESS= subprocess.Popen("vncviewer {host}:{port}".format(host=host, port=port), shell=True)
+
+def kill_vnc_process():
+    assert not VNC_PROCESS is None
+    VNC_PROCESS.kill()
 
 def choose_languages():
     language_packs= force_choice(False, True, uck.available_language_packs(), "Choose which languages you want your system to support", multi_choice=True)
@@ -50,11 +60,20 @@ def start_customization():
         args.update({"run_graphical_customization":True})
 
     disable_interface()
-
+    
     def run_function():
         print "CUSTOMIZATION STARTED WITH ARGS:", args
+        custom_signals= ["run_vnc_signal", "stop_vnc_signal"]
         def progress_callback(x):
-            set_progress(x)
+            if x=="run_vnc_signal":
+                run_vnc_process("localhost", "21693")
+            elif x=="stop_vnc_signal":
+                kill_vnc_process()
+            else:
+                if type(x)==float:
+                    set_progress(x)
+                else:
+                    logging.warn("unknown monitored string received: "+x)
         do_profile=False
         if do_profile:
             profile= uck_progressmonitor.profile( uck.customization, (), args)
@@ -62,7 +81,7 @@ def start_customization():
             pickle.dump( profile, open(PROGRESSPROFILE_FILE, "wb" ))
         else:
             profile= pickle.load( open( PROGRESSPROFILE_FILE, "rb"))
-            uck_progressmonitor.run( uck.customization, (), args, profile, progress_callback )
+            uck_progressmonitor.run( uck.customization, (), args, profile, progress_callback, ["run_vnc_signal", "stop_vnc_signal"] )
         enable_interface()
     t1= threading.Thread(target= run_function)
     t1.start()
