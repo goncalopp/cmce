@@ -42,8 +42,8 @@ def profile(function, args, kwargs, tick_str=DEFAULT_TICK_STR):
     return ProgressProfile(tick_number, weights, tick_str)
 
 
-def run(function, args, kwargs, profile, callback):
-    '''runs the given function with the given arguments, using the given ProgressProfile to estimate the progress. Calls progress_callback with a float progress vector (0..1) each time the progress is updated'''
+def run(function, args, kwargs, profile, callback, additional_monitor_strings):
+    '''runs the given function with the given arguments, using the given ProgressProfile to estimate the progress. Calls callback with a float progress vector (0..1) each time the progress is updated. Also, callback is called each time a string in the list additional_monitor_string is found'''
     global progress
     global tick_index
     assert isinstance(profile, ProgressProfile)
@@ -62,6 +62,8 @@ def run(function, args, kwargs, profile, callback):
             tick_index+=1
             progress_vector= progress / total
             callback( progress_vector )
+        elif x in additional_monitor_string:
+            callback( x )
         else:
             #can have other strings...
             logging.debug("progress: other string: "+ x)
