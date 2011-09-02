@@ -189,3 +189,16 @@ then
 		: do nothing - initrd.lz not used
 	fi
 fi
+echo "d-i preseed/late_command string mkdir /target/preseeded" >> preseed.cfg
+
+
+#Add a command to preseeding to make livecd copy root home to user home on finishing instalation (home customizations stored on /root)
+PRESEED_FILE=../preseed/caixamagica.seed
+echo Adding customization copying command to preseeding
+echo "ubiquity ubiquity/success_command string mkdir /target/preseeded" >> $PRESEED_FILE
+#change boot parameters to do run ubiquity in automatic mode
+BOOT_FILE=../isolinux/txt.cfg
+cat $BOOT_FILE | sed "s/--/automatic-ubiquity --/" | tee $BOOT_FILE > /dev/null
+
+#the PRESEED_FILE must be specified in BOOT_FILE, in the following way:
+#append [...] file=/cdrom/[PRESEED_FILE] [...]
