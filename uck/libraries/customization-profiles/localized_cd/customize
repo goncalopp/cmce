@@ -135,6 +135,7 @@ if [ -n "$LIVECD_LANGS" ]; then
 	echo "Removing unnecessary language packages..."
 	REMOVED_PACKAGES=`dpkg-query --show | cut -f1 | grep -E '^(language-pack|language-support)' | grep -Ev "[-]($LANGPACKS_CONCATENATED)\>"`
 	remove_packages $REMOVED_PACKAGES ||
+
 		failure "Removing packages failed, error=$?"
 fi
 
@@ -152,7 +153,7 @@ if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
 	#TODO: create user, su to it, etc
 	apt-get update || apt-get update
 	install_packages xvfb x11vnc
-	useradd $CUSTOMIZATION_USER --create-home
+	#useradd $CUSTOMIZATION_USER --create-home
 	Xvfb $DISPLAY -screen 0 800x600x16 &
 	XVFB_PID=$!
 	sleep 1
@@ -161,12 +162,14 @@ if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
 	sleep 1
 	#TODO: kde, etc
 	echo "running graphical environment..."
-	sudo -u $CUSTOMIZATION_USER gnome-session
-	kill $X11VNC_PID
-	kill $XVFB_PID
+	gnome-session
+	kill -9 $X11VNC_PID
+	kill -9 $XVFB_PID
+	#copy customized home, for later recreation
+	cp -pR /root /customization-home
 	remove_packages xvfb x11vnc
 	cp -a sources.list.bak /etc/apt/sources.list
-	userdel --remove $CUSTOMIZATION_USER
+	#userdel --remove $CUSTOMIZATION_USER
 fi
 
 echo "Done"
