@@ -126,7 +126,7 @@
 </node>
 </node>
 <node CREATED="1311179847215" ID="ID_1819087510" MODIFIED="1314023360967" POSITION="right" TEXT="progresso">
-<node CREATED="1311179854797" FOLDED="true" ID="ID_1771514025" MODIFIED="1314379799836" TEXT="semana 1">
+<node CREATED="1311179854797" FOLDED="true" ID="ID_1771514025" MODIFIED="1314986433651" TEXT="semana 1">
 <node CREATED="1311179860841" ID="ID_252548493" MODIFIED="1311345456763" TEXT="dia 1">
 <node CREATED="1311180417479" ID="ID_318347115" MODIFIED="1311180427339" TEXT="adicionada mais informa&#xe7;&#xe3;o &#xe0; wiki"/>
 <node CREATED="1311179938072" ID="ID_884489177" MODIFIED="1311179951540" TEXT="instala&#xe7;&#xe3;o e configura&#xe7;&#xe3;o do CM"/>
@@ -252,7 +252,7 @@
 <node CREATED="1314022633273" ID="ID_628604825" MODIFIED="1314022633275" TEXT="come&#xe7;o de integra&#xe7;&#xe3;o do framework com GUI/UCK"/>
 </node>
 </node>
-<node CREATED="1314023351003" FOLDED="true" ID="ID_1895981900" MODIFIED="1314636934731" TEXT="semana 6">
+<node CREATED="1314023351003" FOLDED="true" ID="ID_1895981900" MODIFIED="1314986431652" TEXT="semana 6">
 <node CREATED="1314023371949" ID="ID_1718914167" MODIFIED="1314023373787" TEXT="dia 24">
 <node CREATED="1314279437873" ID="ID_671265931" MODIFIED="1314279506092" TEXT="testes, bugs"/>
 <node CREATED="1314279421466" ID="ID_1269425531" MODIFIED="1314279437595" TEXT="conclus&#xe3;o de desenvolvimento de framework"/>
@@ -284,6 +284,24 @@
 <node CREATED="1314636808944" ID="ID_351036430" MODIFIED="1314636814601" TEXT="afina&#xe7;&#xe3;o de profile de progresso"/>
 <node CREATED="1314636838023" ID="ID_1249347480" MODIFIED="1314636853007" TEXT="altera&#xe7;&#xe3;o ao framework de monitoriza&#xe7;&#xe3;o para suportar monitoriza&#xe7;&#xe3;o de strings arbitrarias"/>
 <node CREATED="1314636819528" ID="ID_411466568" MODIFIED="1314636834817" TEXT="correr e terminar a janela de VNC automaticamente"/>
+</node>
+<node CREATED="1314986422677" ID="ID_1155987700" MODIFIED="1314986425279" TEXT="dia 30">
+<node CREATED="1314986455214" ID="ID_1394167376" MODIFIED="1314986456797" TEXT="testes"/>
+<node CREATED="1314986457186" ID="ID_1829279920" MODIFIED="1314986464657" TEXT="familizariza&#xe7;&#xe3;o com o preseeding"/>
+<node CREATED="1314986485829" ID="ID_1582857128" MODIFIED="1314986527851" TEXT="tentativas para fazer o preceeding copiar customiza&#xe7;&#xf5;es"/>
+</node>
+<node CREATED="1314986422677" ID="ID_613689525" MODIFIED="1314986556115" TEXT="dia 31">
+<node CREATED="1314986457186" ID="ID_798716991" MODIFIED="1314986464657" TEXT="familizariza&#xe7;&#xe3;o com o preseeding"/>
+<node CREATED="1314986485829" ID="ID_1585554354" MODIFIED="1314986527851" TEXT="tentativas para fazer o preceeding copiar customiza&#xe7;&#xf5;es"/>
+</node>
+<node CREATED="1314986422677" ID="ID_1056140832" MODIFIED="1314986563528" TEXT="dia 32">
+<node CREATED="1314986457186" ID="ID_164755768" MODIFIED="1314986464657" TEXT="familizariza&#xe7;&#xe3;o com o preseeding"/>
+<node CREATED="1314986485829" ID="ID_28225798" MODIFIED="1314986527851" TEXT="tentativas para fazer o preceeding copiar customiza&#xe7;&#xf5;es"/>
+</node>
+<node CREATED="1314986422677" ID="ID_1173007114" MODIFIED="1314986575308" TEXT="dia 33">
+<node CREATED="1314986457186" ID="ID_457480235" MODIFIED="1314986464657" TEXT="familizariza&#xe7;&#xe3;o com o preseeding"/>
+<node CREATED="1314986485829" ID="ID_945506683" MODIFIED="1314986618152" TEXT="preceeding copia customiza&#xe7;&#xf5;es"/>
+<node CREATED="1314986618891" ID="ID_365777226" MODIFIED="1314986632455" TEXT="altera&#xe7;&#xe3;o de parametros de boot para usar o preceeding"/>
 </node>
 </node>
 </node>
