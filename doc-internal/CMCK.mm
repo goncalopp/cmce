@@ -304,6 +304,13 @@
 <node CREATED="1314986618891" ID="ID_365777226" MODIFIED="1314986632455" TEXT="altera&#xe7;&#xe3;o de parametros de boot para usar o preceeding"/>
 </node>
 </node>
+<node CREATED="1315246719479" ID="ID_1577648656" MODIFIED="1315246721560" TEXT="semana 8">
+<node CREATED="1315246725604" ID="ID_1638455477" MODIFIED="1315246727655" TEXT="dia 34">
+<node CREATED="1315246741138" ID="ID_1445778671" MODIFIED="1315246752598" TEXT="altera&#xe7;&#xe3;o &#xe0; c&#xf3;pia de customiza&#xe7;&#xf5;es"/>
+<node CREATED="1315246728782" ID="ID_1835395465" MODIFIED="1315246736630" TEXT="testes"/>
+<node CREATED="1315246756022" ID="ID_618873552" MODIFIED="1315246784626" TEXT="desktop background n&#xe3;o fica customizado??"/>
+</node>
+</node>
 </node>
 </node>
 </map>
