@@ -160,9 +160,8 @@ if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
 	x11vnc -display $DISPLAY -rfbport $VNC_PORT -nopw -listen $VNC_ALLOW_IP -xkb &
 	X11VNC_PID=$!
 	sleep 1
-	#TODO: kde, etc
 	echo "running graphical environment..."
-	gnome-session
+	gnome-session || startkde || failure "failed to run desktop environment"
 	kill -9 $X11VNC_PID
 	kill -9 $XVFB_PID
 	#copy customized home, for later recreation
