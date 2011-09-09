@@ -37,6 +37,7 @@ def run_vnc_process(host, port="5900"):
 def kill_vnc_process():
     assert not VNC_PROCESS is None
     VNC_PROCESS.kill()
+    VNC_PROCESS= None
 
 def choose_languages():
     language_packs= force_choice(False, True, uck.available_language_packs(), "Choose which languages you want your system to support", multi_choice=True)
