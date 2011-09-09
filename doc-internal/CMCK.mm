@@ -348,6 +348,7 @@
 <node CREATED="1315582356137" ID="ID_1099548042" MODIFIED="1315582357277" TEXT="testes"/>
 <node CREATED="1315582357604" ID="ID_1469848824" MODIFIED="1315582364192" TEXT="correc&#xe7;&#xe3;o de bugs">
 <node CREATED="1315582365129" ID="ID_398258339" MODIFIED="1315582378134" TEXT="bug de PATH quando uck n&#xe3;o est&#xe1; instalado"/>
+<node CREATED="1315586599677" ID="ID_70864397" MODIFIED="1315586622479" TEXT="bug no vnc ao correr customiza&#xe7;&#xe3;o gr&#xe1;fica duas vezes"/>
 </node>
 <node CREATED="1315582388184" ID="ID_1898433017" MODIFIED="1315582400987" TEXT="remo&#xe7;&#xe3;o de packages desnecess&#xe1;rias do livecd ap&#xf3;s customiza&#xe7;&#xe3;o"/>
 <node CREATED="1315582423249" ID="ID_493821131" MODIFIED="1315582427455" TEXT="investiga&#xe7;&#xe3;o de bugs"/>
