@@ -17,7 +17,7 @@ import logging
 import threading, subprocess
 
 from PyQt4 import QtGui
-from PyQt4.QtCore import QObject, QString, SIGNAL
+from PyQt4.QtCore import QObject, QString, SIGNAL, QThread
 
 from main import  Ui_MainWindow
 from gui_library.input  import choice, force_choice
@@ -64,26 +64,36 @@ def uck_arguments(iso, customization_dir, change_language, graphical_customizati
         args.update({"run_graphical_customization":True})
     return args
 
-def customization_thread_function(args):
-    def progress_callback(x):
-        if x==VNC_SIGNALS[0]:
-            run_vnc_process(VNC_HOST, VNC_PORT)
-        elif x==VNC_SIGNALS[1]:
-            kill_vnc_process()
-        else:
-            if type(x)==float:
-                myapp.set_progress(x)
-            else:
-                logging.warn("unknown monitored string received: "+x)
-    if DO_PROFILE:
-        profile= uck_progressmonitor.profile( uck.customization, (), args)
-        print "profile:",profile
-        pickle.dump( profile, open(PROGRESSPROFILE_FILE, "wb" ))
-    else:
-        profile= pickle.load( open( PROGRESSPROFILE_FILE, "rb"))
-        uck_progressmonitor.run( uck.customization, (), args, profile, progress_callback, VNC_SIGNALS )
-    myapp.enable_interface()
 
+class CustomizationClass(QThread):
+    def __init__(self, parent=None):
+        QThread.__init__(self, parent)
+
+    def progress_callback(self, x):
+            if x==VNC_SIGNALS[0]:
+                run_vnc_process(VNC_HOST, VNC_PORT)
+            elif x==VNC_SIGNALS[1]:
+                kill_vnc_process()
+            else:
+                if type(x)==float:
+                    myapp.set_progress(x)
+                else:
+                    logging.warn("unknown monitored string received: "+x)
+
+    def run(self):
+        args=self.args
+        if DO_PROFILE:
+            profile= uck_progressmonitor.profile( uck.customization, (), args)
+            print "profile:",profile
+            pickle.dump( profile, open(PROGRESSPROFILE_FILE, "wb" ))
+        else:
+            profile= pickle.load( open( PROGRESSPROFILE_FILE, "rb"))
+            uck_progressmonitor.run( uck.customization, (), args, profile, self.progress_callback, VNC_SIGNALS )
+
+
+    def customize(self, args):
+        self.args=args
+        self.start()
 
 
 #------GUI FUNCTIONS-------------------------------------------------
@@ -131,8 +141,10 @@ class MyMainWindow(Ui_MainWindow, QtGui.QMainWindow):
         cust_dir= os.path.expanduser(CUSTOMIZATION_DIR)
         arguments= uck_arguments(iso_file, cust_dir, self.change_language(), self.run_graphic_customization())
         self.disable_interface()
-        t1= threading.Thread(target= customization_thread_function, kwargs={"args":arguments})
-        t1.start()
+        self.ct= CustomizationClass()
+        self.connect(self.ct, SIGNAL("finished()"), self.enable_interface)
+        self.connect(self.ct, SIGNAL("terminated()"), self.enable_interface)
+        self.ct.customize(arguments)
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
