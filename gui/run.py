@@ -26,7 +26,6 @@ from process_utils import run_function_with_callback_on_output
 import uck
 import uck_progressmonitor
 
-logging.basicConfig(level=logging.DEBUG)
 
 def check_iso(filename):
     if not filename:
@@ -56,6 +55,15 @@ def choose_languages():
     else:
         return (language_packs, boot_languages, default_boot_language)
 
+def uck_arguments(iso, customization_dir, change_language, graphical_customization):
+    args= {"remaster_dir":customization_dir, "source_iso":iso}
+    if change_language:
+        lp, bl, dbl= choose_languages()
+        args.update({"language_packs":lp, "livecd_locales":bl, "livecd_locale": dbl})
+    if  graphical_customization:
+        args.update({"run_graphical_customization":True})
+    return args
+
 def customization_thread_function(args):
     def progress_callback(x):
         if x==VNC_SIGNALS[0]:
@@ -64,7 +72,7 @@ def customization_thread_function(args):
             kill_vnc_process()
         else:
             if type(x)==float:
-                set_progress(x)
+                myapp.set_progress(x)
             else:
                 logging.warn("unknown monitored string received: "+x)
     if DO_PROFILE:
@@ -74,49 +82,13 @@ def customization_thread_function(args):
     else:
         profile= pickle.load( open( PROGRESSPROFILE_FILE, "rb"))
         uck_progressmonitor.run( uck.customization, (), args, profile, progress_callback, VNC_SIGNALS )
-    enable_interface()
+    myapp.enable_interface()
 
-def start_customization():
-    iso_file= get_iso()
-    cust_dir= os.path.expanduser(CUSTOMIZATION_DIR)
-    if not check_iso(iso_file):
-         return
-    args= {"remaster_dir":cust_dir, "source_iso":iso_file}
-    if change_language():
-        lp, bl, dbl= choose_languages()
-        args.update({"language_packs":lp, "livecd_locales":bl, "livecd_locale": dbl})
-    if  run_graphic_customization():
-        args.update({"run_graphical_customization":True})
 
-    disable_interface()
-    t1= threading.Thread(target= customization_thread_function, kwargs={"args":args})
-    t1.start()
 
 #------GUI FUNCTIONS-------------------------------------------------
 
-def disable_interface():
-    myapp.startButton.setEnabled( False )
 
-def enable_interface():
-    myapp.startButton.setEnabled( True )
-
-def browse_iso():
-    filename= QtGui.QFileDialog().getOpenFileName(None, "Select ISO", "", "ISO image (*.iso)")
-    if filename:
-        myapp.pathEdit.setText(filename)
-
-def get_iso():
-    return myapp.pathEdit.text()
-
-def set_progress(fraction):
-    assert 0<=fraction<=1
-    myapp.progressBar.setValue( int(100*fraction) )
-
-def change_language():
-    return myapp.languageCheck.isChecked()
-
-def run_graphic_customization():
-    return myapp.graphicalCheck.isChecked()
 
 class MyMainWindow(Ui_MainWindow, QtGui.QMainWindow):
     def __init__(self):
@@ -125,12 +97,45 @@ class MyMainWindow(Ui_MainWindow, QtGui.QMainWindow):
         self.setupSignals()
 
     def setupSignals(self):
-        QObject.connect(self.browseButton, SIGNAL("clicked()"), browse_iso)
-        QObject.connect(self.startButton, SIGNAL("clicked()"), start_customization)
+        QObject.connect(self.browseButton, SIGNAL("clicked()"), self.browse_iso)
+        QObject.connect(self.startButton, SIGNAL("clicked()"), self.start_customization)
 
+    def disable_interface(self):
+        self.startButton.setEnabled( False )
 
+    def enable_interface(self):
+        self.startButton.setEnabled( True )
+
+    def browse_iso(self):
+        filename= QtGui.QFileDialog().getOpenFileName(None, "Select ISO", "", "ISO image (*.iso)")
+        if filename:
+            self.pathEdit.setText(filename)
+
+    def get_iso(self):
+        return self.pathEdit.text()
+
+    def set_progress(self, fraction):
+        assert 0<=fraction<=1
+        self.progressBar.setValue( int(100*fraction) )
+
+    def change_language(self):
+        return self.languageCheck.isChecked()
+
+    def run_graphic_customization(self):
+        return self.graphicalCheck.isChecked()
+
+    def start_customization(self):
+        iso_file= self.get_iso()
+        if not check_iso(iso_file):
+             return
+        cust_dir= os.path.expanduser(CUSTOMIZATION_DIR)
+        arguments= uck_arguments(iso_file, cust_dir, self.change_language(), self.run_graphic_customization())
+        self.disable_interface()
+        t1= threading.Thread(target= customization_thread_function, kwargs={"args":arguments})
+        t1.start()
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
     app = QtGui.QApplication(sys.argv)
     myapp = MyMainWindow()
     myapp.show()
