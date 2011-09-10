@@ -76,7 +76,7 @@ class CustomizationClass(QThread):
                 kill_vnc_process()
             else:
                 if type(x)==float:
-                    myapp.set_progress(x)
+                    self.emit(SIGNAL("setprogress(float)"), x)
                 else:
                     logging.warn("unknown monitored string received: "+x)
 
@@ -144,6 +144,7 @@ class MyMainWindow(Ui_MainWindow, QtGui.QMainWindow):
         self.ct= CustomizationClass()
         self.connect(self.ct, SIGNAL("finished()"), self.enable_interface)
         self.connect(self.ct, SIGNAL("terminated()"), self.enable_interface)
+        self.connect(self.ct, SIGNAL("setprogress(float)"), self.set_progress)
         self.ct.customize(arguments)
 
 if __name__ == "__main__":
