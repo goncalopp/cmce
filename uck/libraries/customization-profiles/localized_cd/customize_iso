@@ -209,7 +209,7 @@ fi
 
 CUST_COMMAND='CUSTDIR="/target/customization-home" ;  USERHOME=/target`cat /target/etc/passwd | grep 1000 | cut -d ":" -f 6` ; chown -R 1000:1000 $CUSTDIR && rsync -a $CUSTDIR/ $USERHOME && rm -rf $CUSTDIR && mkdir /target/preseeded'
 echo Adding customization copying command to preseeding
-echo 'ubiquity ubiquity/success_command string $CUST_COMMAND' >> $PRESEED_FILE
+echo "ubiquity ubiquity/success_command string $CUST_COMMAND" >> $PRESEED_FILE
 #change boot parameters to do run ubiquity in automatic mode
 cat $BOOT_FILE | sed "s/--/automatic-ubiquity --/" | tee $BOOT_FILE > /dev/null
 
