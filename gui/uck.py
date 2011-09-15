@@ -75,6 +75,7 @@ def write_var(var, filename):
 
 def customization(remaster_dir, source_iso, remove_win32_files=False, iso_description="Customized live CD", run_graphical_customization=False, language_packs=[], livecd_locales=[], livecd_locale=None, desktop_types=["gnome","kde"]):
     print "customization process started"
+    print "tick"
     scripts_dir= SCRIPTS_DIR
     libraries_dir= LIBRARIES_DIR
     build_dir= remaster_dir+"/customization-scripts"
@@ -90,6 +91,7 @@ def customization(remaster_dir, source_iso, remove_win32_files=False, iso_descri
             print "removing old build dir..."
             shutil.rmtree(build_dir)
     print "copying scripts, writing var..."
+    print "tick"
     shutil.copytree(libraries_dir+"/customization-profiles/localized_cd/", build_dir )
 
     write_var(language_packs, build_dir+"/language_packs")
@@ -108,6 +110,7 @@ def customization(remaster_dir, source_iso, remove_win32_files=False, iso_descri
 
     print "starting UCK build..."
     os.chdir(SCRIPTS_DIR)
+    print "tick"
     command= '''export UCK_USERNAME=$USER ; gksudo ./uck-remaster "{source_iso}" "{build_dir}" "{remaster_dir}"'''.format( **locals() )
     process= subprocess.Popen(command, shell=True, stdout=sys.stdout, stderr=sys.stderr)
     returncode= process.wait()
