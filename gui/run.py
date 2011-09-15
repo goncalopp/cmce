@@ -10,21 +10,23 @@ VNC_HOST= "localhost"
 VNC_PORT= "21693"
 VNC_SIGNALS= ["run_vnc_signal", "stop_vnc_signal"]
 
+UI_FILE= "main.ui"  #QtDesigner file
 
 import sys, os
 import pickle
 import logging
 import threading, subprocess
 
-from PyQt4 import QtGui
+from PyQt4 import QtGui, uic
 from PyQt4.QtCore import QObject, QString, SIGNAL, QThread
 
-from main import  Ui_MainWindow
 from gui_library.input  import choice, force_choice
 from gui_library.output import error
 from process_utils import run_function_with_callback_on_output
 import uck
 import uck_progressmonitor
+
+FormClass, FormBaseClass= uic.loadUiType( UI_FILE )  #compile interface
 
 
 def check_iso(filename):
@@ -100,7 +102,7 @@ class CustomizationClass(QThread):
 
 
 
-class MyMainWindow(Ui_MainWindow, QtGui.QMainWindow):
+class MyMainWindow(FormClass, FormBaseClass):
     def __init__(self):
         QtGui.QMainWindow.__init__(self)
         self.setupUi(self)
