@@ -161,7 +161,9 @@ if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
 	X11VNC_PID=$!
 	sleep 1
 	echo "running graphical environment..."
+	echo "run_vnc_signal"
 	gnome-session || startkde || failure "failed to run desktop environment"
+	echo "stop_vnc_signal"
 	kill -9 $X11VNC_PID
 	kill -9 $XVFB_PID
 	#copy customized home, for later recreation
