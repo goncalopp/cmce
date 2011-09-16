@@ -49,7 +49,7 @@ def redirect_output_and_run(function, args, kwargs, file_object):
     assert type(kwargs)==dict
     sys.stdout= sys.stderr= file_object
     try:
-        function(*args, **kwargs)
+        return function(*args, **kwargs)
     except Exception:
         import traceback
         traceback.print_exc()
@@ -71,5 +71,5 @@ def run_function_with_callback_on_output(function, args, kwargs, callback):
             except:    #
                 pass
         p.join()    #can't hurt
-
+        return p.exitcode
 

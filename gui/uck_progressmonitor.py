@@ -69,5 +69,5 @@ def run(function, args, kwargs, profile, callback, additional_monitor_strings=[]
             #can have other strings...
             print x
             pass
-    process_utils.run_function_with_callback_on_output(function, args, kwargs, monitor)
+    return process_utils.run_function_with_callback_on_output(function, args, kwargs, monitor)
 
