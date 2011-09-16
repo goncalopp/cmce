@@ -1,0 +1,6 @@
+uck-* usr/bin
+uck.desktop usr/share/applications
+libraries/* usr/lib/uck
+VERSION usr/lib/uck
+uck.png usr/share/pixmaps
+debian/uck.xpm usr/share/pixmaps
