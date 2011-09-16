@@ -10,8 +10,10 @@ from PyQt4.QtCore import QObject, QString, SIGNAL, QThread
 CUSTOMIZATION_DIR= "~/tmp"   #temporary directory to hold customization files. MUST be absolute path
 PROGRESSPROFILE_FILE= "progress_profile.pickle"
 DO_PROFILE= False  #if this variable is set to True, the program will profile the customization and write timings to PROGRESSPROFILE_FILE, instead of running normally 
-CUSTOMIZATION_HELP="CMCE is now customizing your CD. After a while, a new window will appear with a functioning Caixa Magica system inside. Customize this system to your liking, and logout of you session when you're done. To do this, you need to press the power icon on the top right corner, and select 'Log Out...'"
-
+CUSTOMIZATION_MESSAGE_HELP="CMCE is now customizing your CD. After a while, a new window will appear with a functioning Caixa Magica system inside. Customize this system to your liking, and logout of you session when you're done. To do this, you need to press the power icon on the top right corner, and select 'Log Out...'"
+CUSTOMIZATION_MESSAGE_ERROR="An error occurred in the customization process"
+CUSTOMIZATION_MESSAGE_SUCCESS="Customization finished!"
+CUSTOMIZATION_EXIT_STATUS=0
 
 VNC_PROCESS= None
 VNC_HOST= "localhost"
@@ -97,8 +99,7 @@ class CustomizationClass(QThread):
             pickle.dump( profile, open(PROGRESSPROFILE_FILE, "wb" ))
         else:
             profile= pickle.load( open( PROGRESSPROFILE_FILE, "rb"))
-            uck_progressmonitor.run( uck.customization, (), args, profile, self.progress_callback, VNC_SIGNALS )
-
+            CUSTOMIZATION_EXIT_STATUS= uck_progressmonitor.run( uck.customization, (), args, profile, self.progress_callback, VNC_SIGNALS )
 
     def customize(self, args):
         self.args=args
@@ -143,6 +144,13 @@ class MyMainWindow(FormClass, FormBaseClass):
     def run_graphic_customization(self):
         return self.graphicalCheck.isChecked()
 
+    def finish(self):
+        if CUSTOMIZATION_EXIT_STATUS!=0:
+            error(self, CUSTOMIZATION_MESSAGE_ERROR)
+        else:
+            info(self, CUSTOMIZATION_MESSAGE_SUCCESS)
+        self.enable_interface()
+
     def start_customization(self):
         iso_file= self.get_iso()
         if not check_iso(iso_file):
@@ -151,10 +159,10 @@ class MyMainWindow(FormClass, FormBaseClass):
         arguments= uck_arguments(iso_file, cust_dir, self.change_language(), self.run_graphic_customization())
         self.disable_interface()
         self.ct= CustomizationClass()
-        self.connect(self.ct, SIGNAL("finished()"), self.enable_interface)
-        self.connect(self.ct, SIGNAL("terminated()"), self.enable_interface)
+        self.connect(self.ct, SIGNAL("finished()"), self.finish)
+        self.connect(self.ct, SIGNAL("terminated()"), self.finish)
         self.connect(self.ct, SIGNAL("setprogress(float)"), self.set_progress)
-        info(self,  CUSTOMIZATION_HELP )
+        info(self,  CUSTOMIZATION_MESSAGE_HELP )
         self.ct.customize(arguments)
 
 if __name__ == "__main__":
