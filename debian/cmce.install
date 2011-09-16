@@ -1,4 +1,5 @@
 cmce.desktop usr/share/applications
+cmce usr/bin
 gui/* usr/lib/cmce
 uck usr/lib/cmce
 VERSION usr/lib/cmce
