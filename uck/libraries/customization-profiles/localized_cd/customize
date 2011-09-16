@@ -151,8 +151,8 @@ if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
 	cp -a /etc/apt/sources.list sources.list.bak
 	sed 's/^#deb \(.*\)caixamagica\.pt\(.*\)universe/deb \1caixamagica.pt\2universe/' sources.list.bak > /etc/apt/sources.list
 	#TODO: create user, su to it, etc
-	apt-get update || apt-get update
-	install_packages xvfb x11vnc
+	apt-get update || apt-get update || failure "apt-get update failed"
+	install_packages xvfb x11vnc || failure "Couldn't install needed packages"
 	#useradd $CUSTOMIZATION_USER --create-home
 	Xvfb $DISPLAY -screen 0 800x600x16 &
 	XVFB_PID=$!
@@ -167,10 +167,10 @@ if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
 	kill -9 $X11VNC_PID
 	kill -9 $XVFB_PID
 	#copy customized home, for later recreation
-	cp -pR /root /customization-home
-	remove_packages xvfb x11vnc
+	cp -pR /root /customization-home || failure "failed do copy customizations"
+	remove_packages xvfb x11vnc || failure "failed to remove packages"
 	apt-get autoremove
-	cp -a sources.list.bak /etc/apt/sources.list
+	cp -a sources.list.bak /etc/apt/sources.list || failure "failed to restore sources.list"
 	#userdel --remove $CUSTOMIZATION_USER
 fi
 
