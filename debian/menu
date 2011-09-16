@@ -1,0 +1,6 @@
+?package(cmce): needs="X11"\
+ section="Applications/System/Administration"\
+ title="CMCE"\
+ longtitle="Caixa Magica Customization Kit"\
+ command="/usr/bin/cmce"\
+ icon="/usr/share/pixmaps/cmce.xpm"

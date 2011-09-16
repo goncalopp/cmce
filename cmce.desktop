@@ -1,0 +1,17 @@
+[Desktop Entry]
+Name=Caixa Magica Customization Kit
+GenericName=Caixa Magica Desktop CD Customizer
+Comment=Customize your Caixa Magica Desktop CDs easily
+
+Icon=cmce
+
+Exec=cmce
+Terminal=true
+
+Categories=System;
+StartupNotify=true
+Type=Application
+Version=1.0
+X-DCOP-ServiceType=none
+X-KDE-SubstituteUID=false
+X-KDE-Username=

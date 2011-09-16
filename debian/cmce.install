@@ -1,0 +1,6 @@
+cmce.desktop usr/share/applications
+gui/* usr/lib/cmce
+uck usr/lib/cmce
+VERSION usr/lib/cmce
+cmce.png usr/share/pixmaps
+debian/cmce.xpm usr/share/pixmaps

@@ -1,0 +1,16 @@
+Source: cmce
+Section: utils
+Priority: optional
+Maintainer: Goncalo Pinheira <goncalopp@gmail.com>
+Build-Depends: debhelper (>= 7.0.50~)
+Standards-Version: 3.9.1
+Homepage: http://contribsoft.caixamagica.pt/trac/wiki/cmce/
+
+Package: cmce
+Architecture: all
+Depends: uck (>= 2.4.4), python-qt4, vncviewer
+Suggests: brasero | k3b | burn
+Description: Tool to customize official Caixa Magica Live CDs
+ CMCE is a tool that helps you customizing official Caixa Magica Live CDs
+ graphically, allowing installion of new packages, pre-configuring applications,
+ etc, changing the system language, etc.
