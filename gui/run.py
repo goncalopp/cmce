@@ -1,17 +1,4 @@
 #!/usr/bin/python
-
-CUSTOMIZATION_DIR= "~/tmp"   #temporary directory to hold customization files. MUST be absolute path
-
-PROGRESSPROFILE_FILE= "progress_profile.pickle"
-DO_PROFILE= False  #if this variable is set to True, the program will profile the customization and write timings to PROGRESSPROFILE_FILE, instead of running normally 
-
-VNC_PROCESS= None
-VNC_HOST= "localhost"
-VNC_PORT= "21693"
-VNC_SIGNALS= ["run_vnc_signal", "stop_vnc_signal"]
-
-UI_FILE= "main.ui"  #QtDesigner file
-
 import sys, os
 import pickle
 import logging
@@ -19,6 +6,24 @@ import threading, subprocess
 
 from PyQt4 import QtGui, uic
 from PyQt4.QtCore import QObject, QString, SIGNAL, QThread
+
+CUSTOMIZATION_DIR= "~/tmp"   #temporary directory to hold customization files. MUST be absolute path
+PROGRESSPROFILE_FILE= "progress_profile.pickle"
+DO_PROFILE= False  #if this variable is set to True, the program will profile the customization and write timings to PROGRESSPROFILE_FILE, instead of running normally 
+
+VNC_PROCESS= None
+VNC_HOST= "localhost"
+VNC_PORT= "21693"
+VNC_SIGNALS= ["run_vnc_signal", "stop_vnc_signal"]
+LOCATION_DETECTOR_FILE="uck_progressmonitor.py"
+if os.path.exists(LOCATION_DETECTOR_FILE):
+    #cmce in current directory
+    pass
+else:
+    os.chdir("/usr/lib/cmce")
+if not os.path.exists(LOCATION_DETECTOR_FILE):
+    raise Exception("Could not find CMCE installation directory")
+UI_FILE= "main.ui"   #QtDesigner file
 
 from gui_library.input  import choice, force_choice
 from gui_library.output import error
