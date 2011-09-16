@@ -10,6 +10,8 @@ from PyQt4.QtCore import QObject, QString, SIGNAL, QThread
 CUSTOMIZATION_DIR= "~/tmp"   #temporary directory to hold customization files. MUST be absolute path
 PROGRESSPROFILE_FILE= "progress_profile.pickle"
 DO_PROFILE= False  #if this variable is set to True, the program will profile the customization and write timings to PROGRESSPROFILE_FILE, instead of running normally 
+CUSTOMIZATION_HELP="CMCE is now customizing your CD. After a while, a new window will appear with a functioning Caixa Magica system inside. Customize this system to your liking, and logout of you session when you're done. To do this, you need to press the power icon on the top right corner, and select 'Log Out...'"
+
 
 VNC_PROCESS= None
 VNC_HOST= "localhost"
@@ -26,7 +28,7 @@ if not os.path.exists(LOCATION_DETECTOR_FILE):
 UI_FILE= "main.ui"   #QtDesigner file
 
 from gui_library.input  import choice, force_choice
-from gui_library.output import error
+from gui_library.output import error, info
 from process_utils import run_function_with_callback_on_output
 import uck
 import uck_progressmonitor
@@ -152,6 +154,7 @@ class MyMainWindow(FormClass, FormBaseClass):
         self.connect(self.ct, SIGNAL("finished()"), self.enable_interface)
         self.connect(self.ct, SIGNAL("terminated()"), self.enable_interface)
         self.connect(self.ct, SIGNAL("setprogress(float)"), self.set_progress)
+        info(self,  CUSTOMIZATION_HELP )
         self.ct.customize(arguments)
 
 if __name__ == "__main__":
