@@ -11,13 +11,14 @@ def set_path():
         assert os.path.isfile("uck/libraries/gui.sh")
         SCRIPTS_DIR= "uck"
         LIBRARIES_DIR= SCRIPTS_DIR+"/libraries"
-        print "WARNING! Not using local UCK folder" 
     elif os.path.isdir("/usr/lib/uck"):
         SCRIPTS_DIR= "/usr/bin"
         LIBRARIES_DIR= "/usr/lib/uck"
+        print "WARNING! Not using local UCK folder"
     elif os.path.isdir("/usr/local/lib/uck"):
         SCRIPTS_DIR= "/usr/local/bin"
         LIBRARIES_DIR= "/usr/local/lib/uck"
+        print "WARNING! Not using local UCK folder"
     else:
         raise Exception("UCK doesn't seem to be installed")
 
